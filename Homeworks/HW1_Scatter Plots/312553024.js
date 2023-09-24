@@ -4,9 +4,9 @@ d3.csv("./iris.csv", function (data) {
     data = data.slice(0, -1)
 
     // set the dimensions and margins of the graph
-    var margin = { top: 10, right: 30, bottom: 40, left: 50 },
+    var margin = { top: 20, right: 20, bottom: 90, left: 50 },
         width = 520 - margin.left - margin.right,
-        height = 520 - margin.top - margin.bottom;
+        height = 560 - margin.top - margin.bottom;
 
     let x_label = "sepal length"
     let y_label = "sepal width"
@@ -75,24 +75,24 @@ d3.csv("./iris.csv", function (data) {
     
         // Add X axis label:
         svg.append("text")
-            .attr("text-anchor", "end")
-            .attr("x", width / 2 + margin.left)
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
             .attr("y", height + margin.top + 20)
             .text(x_label);
         
         // Add X axis label:
         svg.append("text")
             .attr("text-anchor", "end")
-            .attr("x", width + margin.left - 20)
+            .attr("x", width)
             .attr("y", height + margin.top + 20)
             .text("X axis");
     
         // Y axis label:
         svg.append("text")
-            .attr("text-anchor", "end")
+            .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
             .attr("y", -margin.left + 20)
-            .attr("x", -margin.top - height / 2 + 20)
+            .attr("x", -height / 2)
             .text(y_label)
 
         // Y axis label:
@@ -100,7 +100,7 @@ d3.csv("./iris.csv", function (data) {
             .attr("text-anchor", "end")
             .attr("transform", "rotate(-90)")
             .attr("y", -margin.left + 20)
-            .attr("x", -margin.top + 20)
+            .attr("x", 0)
             .text("Y axis")
     
         // Color scale: give me a specie name, I return a color
@@ -110,21 +110,21 @@ d3.csv("./iris.csv", function (data) {
 
         // Add legend:
         svg.append("text")
-            .attr("text-anchor", "end")
-            .attr("x", width)
-            .attr("y", 10)
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2 - 100)
+            .attr("y", height + margin.top + 50)
             .text("setosa")
             .style("fill", "#ff000080")
         svg.append("text")
-            .attr("text-anchor", "end")
-            .attr("x", width)
-            .attr("y", 25)
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", height + margin.top + 50)
             .text("versicolor")
             .style("fill", "#00ff0080")
         svg.append("text")
-            .attr("text-anchor", "end")
-            .attr("x", width)
-            .attr("y", 40)
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2 + 100)
+            .attr("y", height + margin.top + 50)
             .text("virginica")
             .style("fill", "#0000ff80")
     
