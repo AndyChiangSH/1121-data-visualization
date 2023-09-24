@@ -106,7 +106,7 @@ d3.csv("./iris.csv", function (data) {
         // Color scale: give me a specie name, I return a color
         var color = d3.scaleOrdinal()
             .domain(["Iris-setosa", "Iris-versicolor", "Iris-virginica"])
-            .range(["#F8766D", "#00BA38", "#619CFF"])
+            .range(["#ff000080", "#00ff0080", "#0000ff80"])
 
         // Add legend:
         svg.append("text")
@@ -114,19 +114,19 @@ d3.csv("./iris.csv", function (data) {
             .attr("x", width)
             .attr("y", 10)
             .text("setosa")
-            .style("fill", "#F8766D")
+            .style("fill", "#ff000080")
         svg.append("text")
             .attr("text-anchor", "end")
             .attr("x", width)
             .attr("y", 25)
             .text("versicolor")
-            .style("fill", "#00BA38")
+            .style("fill", "#00ff0080")
         svg.append("text")
             .attr("text-anchor", "end")
             .attr("x", width)
             .attr("y", 40)
             .text("virginica")
-            .style("fill", "#619CFF")
+            .style("fill", "#0000ff80")
     
         // Add dots
         svg.append('g')
@@ -136,7 +136,7 @@ d3.csv("./iris.csv", function (data) {
             .append("circle")
             .attr("cx", function (d) { return x(d[x_label]); })
             .attr("cy", function (d) { return y(d[y_label]); })
-            .attr("r", 3)
+            .attr("r", 5)
             .style("fill", function (d) { return color(d["class"]) })
     }
 
