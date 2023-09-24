@@ -1,5 +1,5 @@
 //Read the data
-d3.csv("http://vis.lab.djosix.com:2023/data/iris.csv", function (data) {
+d3.csv("./iris.csv", function (data) {
     // console.log(data.slice(0, -1))
     data = data.slice(0, -1)
 
