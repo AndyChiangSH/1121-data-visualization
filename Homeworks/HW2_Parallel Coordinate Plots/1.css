@@ -1,0 +1,13 @@
+body {
+    margin: 0px;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+.tick line {
+    stroke: #616161;
+}
+
+.tick text {
+    font-size: 2.2em
+}
