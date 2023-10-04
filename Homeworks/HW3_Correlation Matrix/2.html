@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abalone Correlation Matrices</title>
+    <style>
+        /* Add your custom styles here */
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        .matrix {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .matrix svg {
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Abalone Correlation Matrices</h1>
+
+    <div class="matrix" id="male-matrix"></div>
+    <div class="matrix" id="female-matrix"></div>
+    <div class="matrix" id="infant-matrix"></div>
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script>
+        // Your data should be loaded here
+        // Replace the following example data with your actual data
+        const maleData = [
+            [1, 0.5, 0.3],
+            [0.5, 1, -0.2],
+            [0.3, -0.2, 1]
+        ];
+
+        const femaleData = [
+            [1, -0.4, 0.6],
+            [-0.4, 1, 0.1],
+            [0.6, 0.1, 1]
+        ];
+
+        const infantData = [
+            [1, 0.2, -0.1],
+            [0.2, 1, 0.4],
+            [-0.1, 0.4, 1]
+        ];
+
+        // Function to create a correlation matrix using D3
+        function createCorrelationMatrix(containerId, data) {
+            const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+            const width = 200;
+            const height = 200;
+
+            const svg = d3.select(`#${containerId}`)
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            // Your visualization logic here
+            // You can use D3 functions to draw rectangles, text, etc.
+
+            // Example: Displaying data as text
+            const rows = svg.selectAll(".row")
+                .data(data)
+                .enter().append("g")
+                .attr("class", "row")
+                .attr("transform", (d, i) => `translate(0,${i * (height / data.length)})`);
+
+            const cells = rows.selectAll(".cell")
+                .data(d => d)
+                .enter().append("g")
+                .attr("class", "cell")
+                .attr("transform", (d, i) => `translate(${i * (width / data.length)}, 0)`);
+
+            cells.append("rect")
+                .attr("width", width / data.length)
+                .attr("height", height / data.length)
+                .style("fill", d => d3.interpolateRdBu(d))
+                .style("stroke", "#ccc");
+
+            cells.append("text")
+                .attr("x", width / data.length / 2)
+                .attr("y", height / data.length / 2)
+                .attr("dy", ".35em")
+                .attr("text-anchor", "middle")
+                .text(d => d.toFixed(2));
+
+        }
+
+        // Create correlation matrices for each category
+        createCorrelationMatrix("male-matrix", maleData);
+        createCorrelationMatrix("female-matrix", femaleData);
+        createCorrelationMatrix("infant-matrix", infantData);
+    </script>
+</body>
+
+</html>
