@@ -3,16 +3,17 @@ const margin = { top: 20, right: 20, bottom: 20, left: 20 },
     width = 600 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom
 
-d3.text("./abalone.data").then(function (data) {
-    // console.log("data", data)
-    var rows = data.split("\n");
-    console.log("rows", rows)
+const data_path = "./abalone.data"
 
+d3.text(data_path).then(function (data) {
+    // console.log("data", data)
+    
     var features = ["Length", "Diameter", "Height", "Whole weight", "Shucked weight", "Viscera weight", "Shell weight", "Rings"]
     var data_M = [];
     var data_F = [];
     var data_I = [];
-
+    
+    var rows = data.split("\n");
     for (var i = 0; i < rows.length; i++) {
         var cols = rows[i].split(",");
 
@@ -32,14 +33,59 @@ d3.text("./abalone.data").then(function (data) {
         }
     }
 
-    console.log("data_M", data_M)
-    console.log("data_F", data_F)
-    console.log("data_I", data_I)
+    // console.log("data_M", data_M)
+    // console.log("data_F", data_F)
+    // console.log("data_I", data_I)
+
+    cm_M = correlation_matrix(data_M)
+    cm_F = correlation_matrix(data_F)
+    cm_I = correlation_matrix(data_I)
 
     render_legend()
-    render_cm(data_M, "#cm_M")
-    render_cm(data_F, "#cm_F")
-    render_cm(data_I, "#cm_I")
+    render_cm(cm_M)
+
+    // add an event listener for the change event
+    const radioButtons = document.querySelectorAll('input[name="sex"]');
+    for (const radioButton of radioButtons) {
+        radioButton.addEventListener('change', showSelected);
+    }
+
+    function showSelected(e) {
+        // console.log(e);
+        if (this.checked) {
+            if (this.value == "male") {
+                render_cm(cm_M)
+            }
+            if (this.value == "female") {
+                render_cm(cm_F)
+            }
+            if (this.value == "infant") {
+                render_cm(cm_I)
+            }
+        }
+    }
+
+    function correlation_matrix(data) {
+        const matrix = math.transpose(data);
+        // let cm = math.zeros(matrix.length, matrix.length);
+        let cm = []
+
+        for (let i = 0; i < matrix.length; i++) {
+            for (let j = 0; j < matrix.length; j++) {
+                let corr = math.corr(matrix[i], matrix[j]);
+                // cm.set([i, j], corr);
+                cm.push({
+                    x: features[i],
+                    y: features[j],
+                    value: +corr
+                });
+
+            }
+        }
+        // console.log("cm", cm)
+
+        return cm
+    }
 
     function render_legend() {
         // legend scale
@@ -80,54 +126,9 @@ d3.text("./abalone.data").then(function (data) {
             .text(function (d, i) { return d.value.toFixed(2); })
     }
 
-    function render_cm(data, id) {
-        const matrix = math.transpose(data);
-        // let cm = math.zeros(matrix.length, matrix.length);
-        let cm = []
-
-        for (let i = 0; i < matrix.length; i++) {
-            for (let j = 0; j < matrix.length; j++) {
-                let corr = math.corr(matrix[i], matrix[j]);
-                // cm.set([i, j], corr);
-                cm.push({
-                    x: features[i],
-                    y: features[j],
-                    value: +corr
-                });
-
-            }
-        }
-
-        // cm = cm.toArray();
-        console.log("cm", cm)
-
-        // Going from wide to long format
-        // cm.forEach(function (d) {
-        //     let x = d[""];
-        //     delete d[""];
-        //     for (prop in d) {
-        //         let y = prop,
-        //             value = d[prop];
-        //         cm.push({
-        //             x: x,
-        //             y: y,
-        //             value: +value
-        //         });
-        //     }
-        // });
-
-        // let cm2 = [];
-        // for (let i = 0; i < cm.length; i++) {
-        //     for (let j = 0; j < cm[i].length; j++) {
-        //         cm2.push({
-        //             x: features[i],
-        //             y: features[j],
-        //             value: +cm[i][j]
-        //         });
-        //     }
-        // }
-        // console.log("cm2", cm2)
-        
+    function render_cm(cm) {
+        // clean svg
+        d3.select("#cm").select('svg').remove()
 
         // List of all variables and number of them
         const domain = Array.from(new Set(cm.map(function (d) { return d.x })))
@@ -154,7 +155,7 @@ d3.text("./abalone.data").then(function (data) {
             .domain(domain)
         
         // Create the svg area
-        const svg = d3.select(id)
+        const svg = d3.select("#cm")
             .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -214,5 +215,4 @@ d3.text("./abalone.data").then(function (data) {
             })
             .style("opacity", 0.8)
     }
-
 })
