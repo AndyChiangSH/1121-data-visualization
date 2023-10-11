@@ -124,6 +124,7 @@ d3.text(data_path).then(function (data) {
             .attr("dy", -3)
             .style("text-anchor", function (d, i) { return i == 0 ? "start" : i == 1 ? "middle" : "end"; })
             .text(function (d, i) { return d.value.toFixed(2); })
+            .style("font-size", 12)
     }
 
     function render_cm(cm) {
@@ -142,7 +143,7 @@ d3.text(data_path).then(function (data) {
         // Create a size scale for bubbles on top right. Watch out: must be a rootscale!
         const size = d3.scaleSqrt()
             .domain([0, 1])
-            .range([0, 15]);
+            .range([0, 12]);
 
         // X scale
         const x = d3.scalePoint()
@@ -186,7 +187,7 @@ d3.text(data_path).then(function (data) {
                     return d.value.toFixed(2);
                 }
             })
-            .style("font-size", 15)
+            .style("font-size", 12)
             // .style("text-align", "center")
             .attr("text-anchor", "middle")
             .style("fill", function (d) {
