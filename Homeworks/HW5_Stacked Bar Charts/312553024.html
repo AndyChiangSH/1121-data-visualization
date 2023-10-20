@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW5_Stacked Bar Charts</title>
+    <link rel="stylesheet" href="312553024.css">
+</head>
+
+<body style="text-align: center;">
+    <h1>HW5_Stacked Bar Charts</h1>
+
+    <!-- Sort by -->
+    <label for="sort-by">Sort by: </label>
+    <select name="sort-by" id="sort-by">
+        <option value="scores_overall" selected>overall</option>
+        <option value="scores_teaching">teaching</option>
+        <option value="scores_research">research</option>
+        <option value="scores_citations">citations</option>
+        <option value="scores_industry_income">industry income</option>
+        <option value="scores_international_outlook">international outlook</option>
+    </select>
+    <!-- Sort order -->
+    <label for="sort-order">Sort order: </label>
+    <select name="sort-order" id="sort-order">
+        <option value="descending" selected>descending</option>
+        <option value="ascending">ascending</option>
+    </select>
+    <button id="sort-button">Sort</button>
+
+    <!-- Create a div where the graph will take place -->
+    <div id="my_dataviz"></div>
+    <hr>
+    <div class="footer" style="font-size: small; color: gray;">
+        <p>Author: 江尚軒</p>
+        <p>Student ID: 312553024</p>
+        <p>Date: 2023/10/20</p>
+    </div>
+</body>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="312553024.js"></script>
+
+</html>
