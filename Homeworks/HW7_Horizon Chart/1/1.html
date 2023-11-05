@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    .horizon {
+        border-top: solid 1px #000;
+        border-bottom: solid 1px #000;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .horizon+.horizon {
+        border-top: none;
+    }
+
+    .horizon canvas {
+        display: block;
+        image-rendering: pixelated;
+    }
+
+    .horizon .title,
+    .horizon .value {
+        bottom: 0;
+        line-height: 30px;
+        margin: 0 6px;
+        position: absolute;
+        font-family: sans-serif;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+        white-space: nowrap;
+    }
+
+    .horizon .title {
+        left: 0;
+    }
+
+    .horizon .value {
+        right: 0;
+    }
+</style>
+
+<body>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://unpkg.com/d3-horizon-chart@0.0.5"></script>
+
+    <script>
+
+        // generate some random data
+        var series_1 = [];
+        var series_2 = [];
+        for (var i = 0, variance = 0; i < 1500; i++) {
+            variance += (Math.random() - 0.5) / 10;
+            series_1.push(Math.cos(i / 100) + variance);
+            series_2.push(Math.cos(i / 100) + variance);
+        }
+
+        var horizonChart = d3.horizonChart()
+            .height(100)
+            .title('Horizon, 4-band')
+            .colors(['#313695', '#4575b4', '#74add1', '#abd9e9', '#fee090', '#fdae61', '#f46d43', '#d73027']);
+
+        var horizons = d3.select('body').selectAll('.horizon')
+            .data([series_1, series_2])
+            .enter().append('div')
+            .attr('class', 'horizon')
+            .each(horizonChart);
+
+    </script> 
+</body>
