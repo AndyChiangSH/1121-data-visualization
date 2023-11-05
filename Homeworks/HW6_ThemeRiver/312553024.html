@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW6_ThemeRiver</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="312553024.css">
+</head>
+
+<body class="container text-center">
+    <h1 class="my-3">HW6_ThemeRiver</h1>
+    <h2><a href="https://www.kaggle.com/datasets/htagholdings/property-sales/" target="_blank">House Property Sales Time Series</a></h2>
+
+    <div class="row my-3">
+        <!-- Create a div where the graph will take place -->
+        <div id="my_dataviz" class="col-12 col-md-6"></div>
+    
+        <div class="m-auto col-12 col-md-6">
+            <p>💡 Drag the blocks to reorder keys.</p>
+            <div id="blocks" class="list-group col draggable">
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <div class="text-muted small">
+        <p>Author: 江尚軒</p>
+        <p>Student ID: 312553024</p>
+        <p>Date: 2023/11/05</p>
+    </div>
+</body>
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v6.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.0/moment.min.js"></script>
+<!-- jsDelivr :: Sortable :: Latest (https://www.jsdelivr.com/package/npm/sortablejs) -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="312553024.js"></script>
+
+</html>
