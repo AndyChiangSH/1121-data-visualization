@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW9_Spotify Tracks Dataset</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="312553024.css" />
+</head>
+
+<body class="text-center">
+    <h1 class="my-3">HW9_Spotify Tracks Dataset</h1>
+    <h2 class="my-3">
+        <a href="https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset?resource=download" target="_blank">🎹 Spotify Tracks Dataset</a>
+    </h2>
+
+    <div class="mx-auto my-5">
+        <!-- <canvas id="my_wordcloud"></canvas> -->
+        <div id="my_wordcloud" class="mx-auto"></div>
+    </div>
+
+    <div class="tooltip">
+        <span class="tooltiptext">Tooltip text</span>
+    </div>
+
+    <fieldset class="form-group my-5">
+        <legend>Features</legend>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio1" value="popularity" checked>
+            <label class="form-check-label" for="inlineRadio1">popularity</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio2" value="duration_ms">
+            <label class="form-check-label" for="inlineRadio2">duration_ms</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio3" value="danceability">
+            <label class="form-check-label" for="inlineRadio3">danceability</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio4" value="energy">
+            <label class="form-check-label" for="inlineRadio4">energy</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio5" value="loudness">
+            <label class="form-check-label" for="inlineRadio5">loudness</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio6" value="speechiness">
+            <label class="form-check-label" for="inlineRadio6">speechiness</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio7" value="acousticness">
+            <label class="form-check-label" for="inlineRadio7">acousticness</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio8" value="instrumentalness">
+            <label class="form-check-label" for="inlineRadio8">instrumentalness</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio9" value="liveness">
+            <label class="form-check-label" for="inlineRadio9">liveness</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feature" id="inlineRadio10" value="valence">
+            <label class="form-check-label" for="inlineRadio10">valence</label>
+        </div>
+    </fieldset>
+
+    <fieldset class="form-group my-5">
+        <legend>Track genre</legend>
+        <select id="track_genre_select" class="form-select" aria-label="track_genre">
+        </select>
+    </fieldset>
+
+    <hr class="my-3">
+    <div class="text-muted small">
+        <p>Author: 江尚軒</p>
+        <p>Student ID: 312553024</p>
+        <p>Date: 2023/11/29</p>
+    </div>
+</body>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="wordcloud2.js"></script>
+<script src="312553024.js"></script>
+
+</html>
