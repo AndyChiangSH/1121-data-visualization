@@ -16,6 +16,10 @@
         <a href="https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset?resource=download" target="_blank">🎹 Spotify Tracks Dataset</a>
     </h2>
 
+    <div class="my-5">
+        ⚠️ Because the data is very large, please be patient and wait for the word cloud to render.
+    </div>
+
     <div class="mx-auto my-5">
         <!-- <canvas id="my_wordcloud"></canvas> -->
         <div id="my_wordcloud" class="mx-auto"></div>
@@ -25,7 +29,7 @@
         <span class="tooltiptext">Tooltip text</span>
     </div>
 
-    <fieldset class="form-group my-5">
+    <fieldset class="form-group my-3">
         <legend>Features</legend>
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="feature" id="inlineRadio1" value="popularity" checked>
@@ -69,17 +73,24 @@
         </div>
     </fieldset>
 
-    <fieldset class="form-group my-5">
+    <fieldset class="form-group my-3">
         <legend>Track genre</legend>
         <select id="track_genre_select" class="form-select" aria-label="track_genre">
+            <!-- Auto fill -->
         </select>
     </fieldset>
+
+    <div class="my-5">
+        <p>This word cloud shows the value of each track. The larger the value, the larger the font size.</p>
+        <p>You can choose the feature of value or select the track genre of the track.</p>
+        <p>This word cloud is made by <a href="https://github.com/timdream/wordcloud2.js" target="_blank">wordcloud2.js</a></p>
+    </div>
 
     <hr class="my-3">
     <div class="text-muted small">
         <p>Author: 江尚軒</p>
         <p>Student ID: 312553024</p>
-        <p>Date: 2023/11/29</p>
+        <p>Date: 2023/12/02</p>
     </div>
 </body>
 
