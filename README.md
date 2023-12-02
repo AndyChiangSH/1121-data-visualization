@@ -11,3 +11,4 @@ NYCU 112上 535511 資料視覺化與視覺分析 Data Visualization and Visual 
 * [HW6_ThemeRiver](https://andychiangsh.github.io/1121-data-visualization/Homeworks/HW6_ThemeRiver/312553024.html)
 * [HW7_Horizon Chart](https://andychiangsh.github.io/1121-data-visualization/Homeworks/HW7_Horizon%20Chart/312553024.html)
 * [HW8_Sankey Diagram](https://andychiangsh.github.io/1121-data-visualization/Homeworks/HW8_Sankey%20Diagram/312553024.html)
+* [HW9_Spotify Tracks Dataset](https://andychiangsh.github.io/1121-data-visualization/Homeworks/HW9_Spotify%20Tracks%20Dataset/312553024.html)
