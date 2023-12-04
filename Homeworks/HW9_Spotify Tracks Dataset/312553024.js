@@ -2,6 +2,7 @@ var selected_feature = "popularity"
 var selected_track_genre = "all"
 
 const data_path = "spotify_tracks_preprocess.csv"
+// const data_path = "http://vis.lab.djosix.com:2023/data/student_data/312553024_hw9/spotify_tracks_preprocess.csv"
 
 d3.csv(data_path, function (data) {
     // console.log("data:", data);
