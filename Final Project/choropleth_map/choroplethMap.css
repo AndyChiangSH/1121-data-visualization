@@ -1,0 +1,44 @@
+
+.tooltip 
+{
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;  /* 將子元素垂直排列 */
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip span {
+  margin: 5px;  
+}
+
+#playButton
+{
+  margin-top: 5px;
+  margin-left: 5px;
+  height: 40px; 
+  width: 40px; 
+  padding: 0; 
+  background-color: rgb(255, 255, 255); 
+  border-radius: 50px;
+}
+
+#playButton:hover {
+  transform: scale(1.1); /* 鼠標懸停時放大 10% */
+  background-color: #d1d1d1; /* 鼠標懸停時的背景顏色 */
+}
+
+#playButton:active {
+  transform: scale(0.9); /* 按下時縮小 10% */
+  background-color: #9a9a9a; /* 按下時的背景顏色 */
+}
+
+.type
+{
+  position: absolute;
+  z-index: 5;
+}
