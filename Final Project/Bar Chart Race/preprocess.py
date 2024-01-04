@@ -2,7 +2,7 @@ import pandas as pd
 import math
 
 
-target_column = "people_fully_vaccinated"
+target_column = "total_deaths"
 
 df = pd.read_csv("Final Project/data/owid-covid-data.csv")
 df.info()
