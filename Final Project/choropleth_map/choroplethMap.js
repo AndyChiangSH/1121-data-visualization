@@ -337,7 +337,7 @@ dailyButtonGroup.append("text")
             .style("opacity", 1)
             .style("stroke", "black")
           
-          var tooltipText =  "<span>Country: " + countryMapping[d.id] + "</span>";
+        var tooltipText = "<span>Country: " + countryMapping[d.id] + "</span>";
           if(currentDataType == true)
           {
               tooltipText += "<span>Total Vaccinations: " + d.total + "</span>";
