@@ -1,5 +1,5 @@
 // Load data
-d3.csv('vaccinetype_data.csv').then(function (data) {
+d3.csv('accumulated_vaccinations.csv').then(function (data) {
     // Parse date strings into JavaScript Date objects
     var parseDate = d3.timeParse('%Y-%m-%d');
     data.forEach(function (d) {
@@ -93,18 +93,11 @@ d3.csv('vaccinetype_data.csv').then(function (data) {
                 'Valneva'
             ];
 
-            // Calculate the total doses for each vaccine type with the custom order
-            var totalDosesByVaccine = customVaccineOrder.map(function (vaccine) {
-                var totalDoses = d3.sum(filteredData, function (day) {
-                    return day[vaccine] ? +day[vaccine] : 0;
-                });
-                return { vaccine: vaccine, totalDoses: totalDoses };
-            });
-
             // Display the information in the tooltip
             var tooltipHTML = '<strong>Date: ' + d3.timeFormat('%Y-%m-%d')(invertedDate) + '</strong><br>';
-            totalDosesByVaccine.forEach(function (item) {
-                tooltipHTML += '<br>' + item.vaccine + ': ' + formatNumber(item.totalDoses);
+            vaccineOrder.forEach(function (vaccine) {
+                var totalDoses = filteredData[filteredData.length - 1][vaccine];
+                tooltipHTML += '<br>' + vaccine + ': ' + formatNumber(totalDoses);
             });
 
             tooltip.transition()
@@ -114,6 +107,7 @@ d3.csv('vaccinetype_data.csv').then(function (data) {
                 .style("left", (d3.event.pageX + 5) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
         })
+
         .on('mouseout', function () {
             tooltip.transition()
                 .duration(500)

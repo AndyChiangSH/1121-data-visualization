@@ -1,14 +1,19 @@
 var start = false;
 var addDays = 0;
-var currentDataType = true;
+
+var currentDataType = 0;
+
+//0-> total
+//1-> daily
+//2-> people
 
 var allData = {};
-var allHandled = {};
-var countries = [];
 var idList = {};
+var peopleCount = {};
 
 var processedData = {};
 var countryMapping = {};
+var countryPopulation = {};
 
 var intervalId;
 
@@ -18,7 +23,10 @@ var totalNumberRangeText = [0,100000, "1M", "10M", "50M", "300M", "1B"];
 var dailyNumberRange = [0,30000, 100000, 500000, 1000000, 5000000, 10000000];
 var dailyNumberRangeText = [0,30000, 100000, 500000, "1M", "5M", "10M"];
 
-const globalStartDate = new Date("2020-12-02");
+var peopleNumberRange = [0,0.14, 0.28, 0.42, 0.56, 0.7, 0.85];
+var peopleNumberRangeText = ["0%", "14%", "28%", "42%", "56%", "70%", "85%"];
+
+const globalStartDate = new Date("2020-12-01");
 
 var dateSlider = document.getElementById('dateSlider');
 
@@ -32,8 +40,15 @@ dateSlider.addEventListener('input', function() {
     }
 });
 
+d3.csv("population.csv").then(function(populationData) {
+    for(var i = 0; i < populationData.length; i++)
+    {
+      countryPopulation[populationData[i]["Country (or dependency)"]] = +populationData[i]["Population (2020)"];
+    }
+})
 
-d3.csv("country_vaccinations.csv").then(function(csvData) 
+
+d3.csv("owid-covid-data.csv").then(function(csvData) 
 {
     for(var i = 0; i < csvData.length; i++)
     {
@@ -43,7 +58,8 @@ d3.csv("country_vaccinations.csv").then(function(csvData)
           var temp = {};
           temp['id'] = csvData[i].iso_code;
           temp['total_vaccinations'] = +csvData[i].total_vaccinations;
-          temp['daily_vaccinations'] = +csvData[i].daily_vaccinations;
+          temp['daily_vaccinations'] = +csvData[i].new_vaccinations;
+          temp['people_vaccinated'] = +csvData[i].people_vaccinated;
           dateObj[temp['id']] = temp;
           allData[csvData[i].date] = dateObj;
       }
@@ -52,23 +68,25 @@ d3.csv("country_vaccinations.csv").then(function(csvData)
           var temp = {};
           temp['id'] = csvData[i].iso_code;
           temp['total_vaccinations'] = +csvData[i].total_vaccinations;
-          temp['daily_vaccinations'] = +csvData[i].daily_vaccinations;
+          temp['daily_vaccinations'] = +csvData[i].new_vaccinations;
+          temp['people_vaccinated'] = +csvData[i].people_vaccinated;
           allData[csvData[i].date][temp['id']] = temp;
       }
       if(!(idList.hasOwnProperty(csvData[i].iso_code)))
       {
         idList[csvData[i].iso_code] = 0;
+        peopleCount[csvData[i].iso_code] = 0;
       }
       if(!(countryMapping.hasOwnProperty(csvData[i].iso_code)))
       {
-        countryMapping[csvData[i].iso_code] = csvData[i].country;
+        countryMapping[csvData[i].iso_code] = csvData[i].location;
       }
     }
 
     d3.json("worldGeo.json").then(function(jsonData)
     {
-      const startDate = new Date('2020-12-02');
-      const endDate = new Date('2022-03-29');
+      const startDate = new Date('2020-12-01');
+      const endDate = new Date('2023-12-28');
 
       const currentDate = new Date(startDate);
       while (currentDate <= endDate) 
@@ -84,6 +102,7 @@ d3.csv("country_vaccinations.csv").then(function(csvData)
           for(var i = 0; i < copyArray.length; i++)
           {
             copyArray[i].daily = 0;
+            copyArray[i].people_vaccinated = 0;
             var haveData = false;
             for (var key of Object.keys(allData[dateString])) 
             {
@@ -91,7 +110,7 @@ d3.csv("country_vaccinations.csv").then(function(csvData)
               {
                 if(allData[dateString][key]['total_vaccinations'] == 0)
                 {
-                  idList[key] += allData[dateString][key]['daily_vaccinations']
+                  idList[key] += allData[dateString][key]['daily_vaccinations'];
                   copyArray[i].total = idList[key];
                 }
                 else
@@ -99,6 +118,17 @@ d3.csv("country_vaccinations.csv").then(function(csvData)
                   idList[key] = allData[dateString][key]['total_vaccinations'];
                   copyArray[i].total = allData[dateString][key]['total_vaccinations'];
                 }
+                
+                if(allData[dateString][key]['people_vaccinated'] == 0)
+                {
+                  copyArray[i].people_vaccinated = peopleCount[key];
+                }
+                else
+                {
+                  copyArray[i].people_vaccinated = allData[dateString][key]['people_vaccinated'];
+                  peopleCount[key] = allData[dateString][key]['people_vaccinated'];
+                }
+
                 copyArray[i].daily = allData[dateString][key]['daily_vaccinations'];
                 haveData = true;
                 break;
@@ -107,14 +137,17 @@ d3.csv("country_vaccinations.csv").then(function(csvData)
             if(haveData == false)
             {
               copyArray[i].total = idList[copyArray[i].id];
+              copyArray[i].people_vaccinated = peopleCount[copyArray[i].id];
             }
           }
           processedData[dateString] = copyArray;
           currentDate.setDate(currentDate.getDate() + 1);
       }
       drawChoropleth();
+      allData = null;
 
     });
+
 });
 
 // The svg
@@ -134,6 +167,11 @@ const totalColorScale = d3.scaleThreshold()
 .domain([100000, 1000000, 10000000, 50000000, 300000000, 1000000000])
 .range(d3.schemeGreens[7]);
 
+// Data and color scale
+const peopleColorScale = d3.scaleThreshold()
+.domain([0.14, 0.28, 0.42, 0.56, 0.7, 0.85])
+.range(d3.schemePurples[7]);
+
 const dailyColorScale = d3.scaleThreshold()
 .domain([30000, 100000, 500000, 1000000, 5000000, 10000000])
 .range(d3.schemeOranges[7]);
@@ -148,7 +186,9 @@ function drawChoropleth()
   var originalSVG = d3.select("#worldMap");
   originalSVG.selectAll("*").remove();
 
-  var currentDate = new Date("2020-12-02");
+  console.log(countryPopulation);
+
+  var currentDate = new Date("2020-12-01");
   currentDate.setDate(currentDate.getDate() + addDays);
 
   const year = currentDate.getFullYear();
@@ -163,13 +203,17 @@ function drawChoropleth()
 
   for(var i = 0; i < mapData.length; i++)
   {
-    if(currentDataType == true)
+    if(currentDataType == 0)
     {
       dataMapping.set(mapData[i].id, mapData[i].total);
     }
-    else
+    else if(currentDataType == 1)
     {
       dataMapping.set(mapData[i].id, mapData[i].daily);
+    }
+    else if(currentDataType == 2)
+    {
+      dataMapping.set(mapData[i].id, mapData[i].people_vaccinated);
     }
     
   }
@@ -184,29 +228,27 @@ function drawChoropleth()
   var totalButtonGroup = svg.append("g")
     .attr("cursor", "pointer")
     .on("mouseover", function() {
-      if(currentDataType == false)
+      if(currentDataType != 0)
       {
         totalButton.attr("fill", "rgb(242,242,242)");
       }
     })
     .on("mouseout", function() {
-      if(currentDataType == false)
+      if(currentDataType != 0)
       {
         totalButton.attr("fill", "white");
       }
     })
     .on("mousedown", function() {
-      if(currentDataType == false)
+      if(currentDataType != 0)
       {
         totalButton.attr("fill", "rgb(200,200,200)");
       }
     })
     .on("click", function() {
-      if(currentDataType == false)
+      if(currentDataType != 0)
       {
-        currentDataType = true;
-        totalButton.attr("fill", "rgb(173, 255, 232)");
-        dailyButton.attr("fill",  "white");
+        currentDataType = 0;
         drawChoropleth();
       }
     });
@@ -218,7 +260,13 @@ function drawChoropleth()
     .attr("height", 30)
     .attr("rx", 15)  // 圓角半徑 x
     .attr("ry", 15)  // 圓角半徑 y
-    .attr("fill", currentDataType ? "rgb(173, 255, 232)" : "white")
+    .attr("fill",  function(){
+      if(currentDataType == 0)
+      {
+          return "rgb(173, 255, 232)";
+      }
+      return "white";
+    })
     .attr("stroke", "black")  // 邊框顏色
     .attr("stroke-width", 2);  // 邊框寬度
 
@@ -233,29 +281,27 @@ function drawChoropleth()
 var dailyButtonGroup = svg.append("g")
     .attr("cursor", "pointer")
     .on("mouseover", function() {
-      if(currentDataType == true)
+      if(currentDataType != 1)
       {
         dailyButton.attr("fill", "rgb(242,242,242)");
       }
     })
     .on("mouseout", function() {
-      if(currentDataType == true)
+      if(currentDataType != 1)
       {
         dailyButton.attr("fill", "white");
       }
     })
     .on("mousedown", function() {
-      if(currentDataType == true)
+      if(currentDataType != 1)
       {
         dailyButton.attr("fill", "rgb(200,200,200)");
       }
     })
     .on("click", function() {
-      if(currentDataType == true)
+      if(currentDataType != 1)
       {
-        currentDataType = false;
-        dailyButton.attr("fill", "rgb(173, 255, 232)");
-        totalButton.attr("fill",  "white");
+        currentDataType = 1;
         drawChoropleth();
       }
     });
@@ -267,7 +313,13 @@ var dailyButton = dailyButtonGroup.append("rect")
     .attr("height", 30)
     .attr("rx", 15)  // 圓角半徑 x
     .attr("ry", 15)  // 圓角半徑 y
-    .attr("fill", currentDataType ? "white" : "rgb(173, 255, 232)")
+    .attr("fill", function(){
+      if(currentDataType == 1)
+      {
+          return "rgb(173, 255, 232)";
+      }
+      return "white";
+    })
     .attr("stroke", "black")  // 邊框顏色
     .attr("stroke-width", 2);  // 邊框寬度
 
@@ -278,6 +330,60 @@ dailyButtonGroup.append("text")
     .attr("fill", "rgb(110,110,110)")
     .text("Daily");
 
+
+    var peopleButtonGroup = svg.append("g")
+    .attr("cursor", "pointer")
+    .on("mouseover", function() {
+      if(currentDataType != 2)
+      {
+        peopleButton.attr("fill", "rgb(242,242,242)");
+      }
+    })
+    .on("mouseout", function() {
+      if(currentDataType != 2)
+      {
+        peopleButton.attr("fill", "white");
+      }
+    })
+    .on("mousedown", function() {
+      if(currentDataType != 2)
+      {
+        peopleButton.attr("fill", "rgb(200,200,200)");
+      }
+    })
+    .on("click", function() {
+      if(currentDataType != 2)
+      {
+        currentDataType = 2;
+        drawChoropleth();
+      }
+    });
+
+var peopleButton = peopleButtonGroup.append("rect")
+    .attr("x", 170)
+    .attr("y", 10)
+    .attr("width", 70)
+    .attr("height", 30)
+    .attr("rx", 15)  // 圓角半徑 x
+    .attr("ry", 15)  // 圓角半徑 y
+    .attr("fill", function(){
+      if(currentDataType == 2)
+      {
+          return "rgb(173, 255, 232)";
+      }
+      return "white";
+    })
+    .attr("stroke", "black")  // 邊框顏色
+    .attr("stroke-width", 2);  // 邊框寬度
+
+peopleButtonGroup.append("text")
+    .attr("x", 205)
+    .attr("y", 30)
+    .attr("text-anchor", "middle")
+    .attr("fill", "rgb(110,110,110)")
+    .text("People");
+
+
   for(var i = 0; i < 7; i++)
   {
     svg.append("rect")
@@ -286,9 +392,38 @@ dailyButtonGroup.append("text")
       .attr("width", 100)
       .attr("height", 15)
       .attr("stroke", "#333")
-      .attr("fill", currentDataType  ? totalColorScale(totalNumberRange[i]) : dailyColorScale(dailyNumberRange[i]) );
+      .attr("fill", function(){
+        if(currentDataType == 0)
+        {
+          return totalColorScale(totalNumberRange[i]); 
+        }
+        else if(currentDataType == 1)
+        {
+          return dailyColorScale(dailyNumberRange[i]);
+        }
+        else if(currentDataType == 2)
+        {
+          return peopleColorScale(peopleNumberRange[i]);
+        }
+         
+      });
+
     svg.append("text")
-      .text(currentDataType ? totalNumberRangeText[i] : dailyNumberRangeText[i])  
+      .text(function(){
+        if(currentDataType == 0)
+        {
+          return totalNumberRangeText[i]; 
+        }
+        else if(currentDataType == 1)
+        {
+          return dailyNumberRangeText[i];
+        }
+        else if(currentDataType == 2)
+        {
+          return peopleNumberRangeText[i];
+        }
+         
+      })
       .attr("x", i * 100 + 100)   // 調整 x 位置以使文本位於矩形開頭
       .attr("y", 615)             // 調整 y 位置以使文本位於矩形上方中心
       .attr("text-anchor", "middle")  // 設置 text-anchor 為 start，使文本位於指定 x 位置的開頭
@@ -315,15 +450,26 @@ dailyButtonGroup.append("text")
       // set the color of each country
       .attr("fill", function (d) {
         
-        if(currentDataType)
+        if(currentDataType == 0)
         {
           d.total = dataMapping.get(d.id) || 0;
           return totalColorScale(d.total);
         }
-        else
+        else if(currentDataType == 1)
         {
           d.daily = dataMapping.get(d.id) || 0;
           return dailyColorScale(d.daily);
+        }
+        else if(currentDataType == 2)
+        {
+          d.people_vaccinated = dataMapping.get(d.id) || 0;
+          var totalPopulation = countryPopulation[countryMapping[d.id]];
+          if(totalPopulation == undefined)
+          {
+            totalPopulation = 1000000000;
+          }
+          var ratio = d.people_vaccinated / totalPopulation;
+          return peopleColorScale(ratio);
         }
       })
       .style("stroke", "rgba(0, 0, 0, 0.1)")
@@ -337,14 +483,25 @@ dailyButtonGroup.append("text")
             .style("opacity", 1)
             .style("stroke", "black")
           
-        var tooltipText = "<span>Country: " + countryMapping[d.id] + "</span>";
-          if(currentDataType == true)
+          var tooltipText =  "<span>Country: " + countryMapping[d.id] + "</span>";
+          if(currentDataType == 0)
           {
               tooltipText += "<span>Total Vaccinations: " + d.total + "</span>";
           }
-          else
+          else if(currentDataType == 1)
           {
               tooltipText += "<span>Daily Vaccinations: " + d.daily + "</span>";
+          }
+          else if(currentDataType == 2)
+          {
+              var totalPopulation = countryPopulation[countryMapping[d.id]];
+              if(totalPopulation == undefined)
+              {
+                totalPopulation = 1000000000;
+              }
+              var ratio = d.people_vaccinated / totalPopulation * 100;
+              tooltipText += "<span>People vaccinated: " + d.people_vaccinated + "</span>";
+              tooltipText += "<span>People vaccinated: " + ratio.toFixed(2) + "%</span>";
           }
           
 
@@ -371,13 +528,24 @@ dailyButtonGroup.append("text")
           .style("stroke", "black")
 
           var tooltipText =  "<span>Country: " + countryMapping[d.id] + "</span>";
-          if(currentDataType == true)
+          if(currentDataType == 0)
           {
               tooltipText += "<span>Total Vaccinations: " + d.total + "</span>";
           }
-          else
+          else if(currentDataType == 1)
           {
               tooltipText += "<span>Daily Vaccinations: " + d.daily + "</span>";
+          }
+          else if(currentDataType == 2)
+          {
+              var totalPopulation = countryPopulation[countryMapping[d.id]];
+              if(totalPopulation == undefined)
+              {
+                totalPopulation = 1000000000;
+              }
+              var ratio = d.people_vaccinated / totalPopulation * 100;
+              tooltipText += "<span>People vaccinated: " + d.people_vaccinated + "</span>";
+              tooltipText += "<span>People vaccinated: " + ratio.toFixed(2) + "%</span>";
           }
 
           var xPosition = event.pageX  + 10; 
@@ -395,7 +563,7 @@ function updateChoropleth()
   drawChoropleth();
   dateSlider.value = addDays;
 
-  if(addDays == 482) //stop
+  if(addDays == 1122) //stop
   {
     clearInterval(intervalId);
     var buttonImage = document.getElementById('buttonImage');

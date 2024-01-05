@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'> 
+        <link rel="stylesheet" href="choroplethMap.css">
+        <script src="https://d3js.org/d3.v6.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <svg id="worldMap" width="900" height="650" style="background-color: #c1dbff;"></svg>
+            <div style="width: 900px; height: 50px; display: flex; flex-direction: row;">
+                <button id="playButton" type="button" onclick="startDate()">
+                    <img  id="buttonImage" src="play-button.png" style="height: 100%; width: 100%; object-fit: cover;">
+                </button>
+                <div style=" margin-left: 10px; width: 100px; margin-top: 5px; background-color: rgb(242, 242, 242); height: 40px; line-height: 40px; font-size: 18px; text-align: center; border: 2px solid #000; border-radius: 10px;">2020-12-01</div>
+                <input style=" margin-left: 10px; width: 600px;" type="range" id="dateSlider" min="0" max="1122" step="1" value="0">
+                <div style=" margin-left: 10px; width: 100px; margin-top: 5px; background-color: rgb(242, 242, 242); height: 40px; line-height: 40px; font-size: 18px; text-align: center; border: 2px solid #000; border-radius: 10px;">2023-12-28</div>
+            </div>
+        </div>
+
+        <script src="choroplethMap.js"></script>
+    </body>
+</html>
